@@ -3,10 +3,10 @@ services:
   db:
     image: mysql:8.0.21
     ports:
-      - '3333:3306'
+      - "${MYSQL_HOST_PORT}:${MYSQL_DIST_PORT}"
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_USER: 'developer'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password0#'
-      MYSQL_DATABASE: 'proto'
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"

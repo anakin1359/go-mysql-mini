@@ -1,3 +1,36 @@
+### Setting Environment Variable
+---
+
+<br>
+
+module install
+```
+go get github.com/joho/godotenv@latest
+```
+
+```
+touch .env .gitignore
+```
+
+
+.env
+```
+MYSQL_USER=sample_user
+MYSQL_PASSWORD=sample_pass
+MYSQL_HOST=127.0.0.1
+MYSQL_HOST_PORT=1234
+MYSQL_DIST_PORT=3306
+MYSQL_ROOT_PASSWORD=sample_root_pass
+MYSQL_DATABASE=sample_database
+```
+
+.gitignore
+```
+.env
+```
+
+<br>
+
 ### MySQL DB Container Environment
 ---
 
