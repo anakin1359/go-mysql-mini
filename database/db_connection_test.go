@@ -42,5 +42,6 @@ func TestDbConnector(t *testing.T) {
 		return
 	} else {
 		fmt.Println("Database connection succeeded.")
+		return
 	}
 }

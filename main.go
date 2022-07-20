@@ -28,5 +28,6 @@ func main() {
 		return
 	} else {
 		fmt.Println("Database connection succeeded.")
+		return
 	}
 }
