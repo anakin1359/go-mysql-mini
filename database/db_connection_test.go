@@ -81,7 +81,7 @@ func TestDbInsert(t *testing.T) {
 
 	insertId, err := result.LastInsertId()
 	if err != nil {
-		fmt.Println("Insert ID: ", -1)
+		fmt.Println("Insert ID: ", -1, err)
 		return
 	}
 	fmt.Println("Insert ID: ", insertId)
