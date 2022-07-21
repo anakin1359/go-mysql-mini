@@ -58,7 +58,7 @@ docker-compose exec db bash
 mysql -u developer -p -h 127.0.0.1 proto
 ```
 ```
-mysql> show databases;
+mysql> SHOW DATABASES;
 +--------------------+
 | Database           |
 +--------------------+
@@ -82,4 +82,40 @@ docker-compose down
 ```
 $ go run main.go
 Database connection succeeded.
+```
+
+<br>
+
+### DB Operation
+---
+
+<br>
+
+```
+mysql> SHOW TABLES;
++-----------------+
+| Tables_in_proto |
++-----------------+
+| user            |
++-----------------+
+1 row in set (0.00 sec)
+```
+```
+mysql> DESC user;
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field         | Type         | Null | Key | Default           | Extra                                         |
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| user_id       | int unsigned | NO   | PRI | NULL              | auto_increment                                |
+| user_name     | varchar(20)  | NO   |     | NULL              |                                               |
+| email_address | varchar(255) | NO   |     | NULL              |                                               |
+| tel_number    | varchar(16)  | NO   |     | NULL              |                                               |
+| created_at    | timestamp    | NO   |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at    | timestamp    | NO   |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+6 rows in set (0.00 sec)
+```
+
+```
+mysql> DROP TABLE user;
+Query OK, 0 rows affected (0.02 sec)
 ```

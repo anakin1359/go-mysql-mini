@@ -8,7 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func DbConnector() *sql.DB {
+func DbConnector() (*sql.DB, error) {
 	var (
 		user     = os.Getenv("MYSQL_USER")
 		pass     = os.Getenv("MYSQL_PASSWORD")
@@ -23,5 +23,5 @@ func DbConnector() *sql.DB {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	return db
+	return db, nil
 }
