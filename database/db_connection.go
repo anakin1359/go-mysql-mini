@@ -71,9 +71,8 @@ func InsertUser(userId uint32, userName string, emailAddress string, telNumber s
 }
 
 // User検索
-func GetUser(userId uint32) (UserList, error) {
-	// 構造体User(配列版)の変数宣言
-	var ul UserList
+func GetUser(userId uint32) (*User, error) {
+	var u User
 
 	db, err := DbConnector()
 	if err != nil {
@@ -81,39 +80,27 @@ func GetUser(userId uint32) (UserList, error) {
 	}
 	defer db.Close()
 
-	query := "SELECT user_id, user_name, email_address, tel_number FROM user"
+	query := "SELECT user_id, user_name, email_address, tel_number FROM user WHERE user_id = ? LIMIT 1"
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		return ul, fmt.Errorf("Prepare Error. %v\n", err)
+		return nil, fmt.Errorf("Prepare Error. %v\n", err)
 	}
 
-	rows, err := stmt.Query() // 複数レコード取得
+	row := stmt.QueryRow(userId)
+
+	err = row.Scan(&u.UserId, &u.UserName, &u.EmailAddress, &u.TelNumber)
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("指定したユーザは存在しません。 %v\n", err)
+	}
 	if err != nil {
-		return ul, fmt.Errorf("Query Error. %v\n", err)
+		return nil, err
 	}
 
-	for rows.Next() {
-		var user User
-		err = rows.Scan(&user.UserId, &user.UserName, &user.EmailAddress, &user.TelNumber)
-		if err != nil {
-			return ul, fmt.Errorf("Scan Error. %v\n", err)
-		}
-		// 指定したuserIdのレコードのみ返却
-		if userId == user.UserId {
-			ul = append(ul, user)
-		}
-	}
-
-	err = rows.Err()
-	if err != nil {
-		return ul, fmt.Errorf("Rows Error. %v\n", err)
-	}
-
-	return ul, nil
+	return &u, nil
 }
 
 // 全User検索
-func GetAllUsers() (UserList, error) {
+func GetAllUsers() (*UserList, error) {
 	// 構造体User(配列版)の変数宣言
 	var ul UserList
 
@@ -126,29 +113,29 @@ func GetAllUsers() (UserList, error) {
 	query := "SELECT user_id, user_name, email_address, tel_number FROM user"
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		return ul, fmt.Errorf("Prepare Error. %v\n", err)
+		return nil, fmt.Errorf("Prepare Error. %v\n", err)
 	}
 
 	rows, err := stmt.Query() // 複数レコード取得
 	if err != nil {
-		return ul, fmt.Errorf("Query Error. %v\n", err)
+		return nil, fmt.Errorf("Query Error. %v\n", err)
 	}
 
 	for rows.Next() {
 		var user User
 		err = rows.Scan(&user.UserId, &user.UserName, &user.EmailAddress, &user.TelNumber)
 		if err != nil {
-			return ul, fmt.Errorf("Scan Error. %v\n", err)
+			return nil, fmt.Errorf("Scan Error. %v\n", err)
 		}
 		ul = append(ul, user)
 	}
 
 	err = rows.Err()
 	if err != nil {
-		return ul, fmt.Errorf("Rows Error. %v\n", err)
+		return nil, fmt.Errorf("Rows Error. %v\n", err)
 	}
 
-	return ul, nil
+	return &ul, nil
 }
 
 // UserId検索 -> UserName変更

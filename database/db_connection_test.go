@@ -79,12 +79,12 @@ func TestGetUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	var uid uint32 = 10001
+	var uid uint32 = 100020
 	u, err := GetUser(uid)
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(u)
+	t.Logf("%+v", u)
 }
 
 // 全User検索
@@ -100,8 +100,7 @@ func TestGetAllUsers(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println("[SUCCESS] User List:", userList)
-	// t.Logf("%+v", userList)
+	t.Logf("%+v", userList)
 }
 
 // User検索 -> UserName変更
