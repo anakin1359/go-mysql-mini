@@ -29,7 +29,7 @@ func EnvSetting() string {
 	return conf
 }
 
-// 接続テスト
+// DB接続
 func TestDbConnector(t *testing.T) {
 	conf := EnvSetting()
 
@@ -51,7 +51,7 @@ func TestDbConnector(t *testing.T) {
 	}
 }
 
-// レコードinsertテスト
+// User情報登録
 func TestInsertUser(t *testing.T) {
 	conf := EnvSetting()
 	db, err := sql.Open("mysql", conf)
@@ -70,7 +70,24 @@ func TestInsertUser(t *testing.T) {
 	// t.Logf("%+v", lastUid)
 }
 
-// 全レコード取得テスト
+// User検索
+func TestGetUser(t *testing.T) {
+	conf := EnvSetting()
+	db, err := sql.Open("mysql", conf)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer db.Close()
+
+	var uid uint32 = 10001
+	u, err := GetUser(uid)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(u)
+}
+
+// 全User検索
 func TestGetAllUsers(t *testing.T) {
 	conf := EnvSetting()
 	db, err := sql.Open("mysql", conf)
@@ -86,3 +103,6 @@ func TestGetAllUsers(t *testing.T) {
 	fmt.Println("[SUCCESS] User List:", userList)
 	// t.Logf("%+v", userList)
 }
+
+// User検索 -> UserName変更
+// User検索 -> 消去
