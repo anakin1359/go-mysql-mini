@@ -81,4 +81,20 @@ func TestGetAllUsers(t *testing.T) {
 }
 
 // User検索 -> UserName変更
+func TestUpdateUserName(t *testing.T) {
+	db, err := DbConnector()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	var uid uint32 = 10012
+	var userName string = "proto_user_aaa"
+	_, err = UpdateUserName(db, uid, userName)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log("[SUCCESS]")
+}
+
 // User検索 -> 消去

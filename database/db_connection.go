@@ -88,8 +88,29 @@ func GetUser(db *sql.DB, userId uint32) (*User, error) {
 }
 
 // UserId検索 -> UserName変更
-// func UpdateUserName(userId uint32, userName string) bool {
-// }
+func UpdateUserName(db *sql.DB, userId uint32, userName string) (bool, error) {
+	u, err := GetUser(db, userId)
+	if err != nil {
+		return false, err
+	}
+	if u.UserName == userName {
+		return false, fmt.Errorf("前回と同じユーザ名です。\n")
+	}
+
+	query := "UPDATE user SET user_name = ? WHERE user_id = ?;"
+
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		return false, fmt.Errorf("Prepare Error. %v\n", err)
+	}
+
+	u.UserName = userName
+	_, err = stmt.Exec(u.UserName, u.UserId)
+	if err != nil {
+		return false, fmt.Errorf("Failure of query execution process. %v\n", err)
+	}
+	return true, nil
+}
 
 // UserId検索 -> 消去
 // func DeleteUserInfo() bool {}
