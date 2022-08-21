@@ -88,13 +88,13 @@ func TestUpdateUserName(t *testing.T) {
 	}
 	defer db.Close()
 
-	var uid uint32 = 10012
-	var userName string = "proto_user_aaa"
+	var uid uint32 = 10001
+	var userName string = "proto_user"
 	_, err = UpdateUserName(db, uid, userName)
 	if err != nil {
-		t.Error(err)
+		t.Errorf("[FAILED] Update uncompleted. %v\n", err)
 	}
-	t.Log("[SUCCESS]")
+	t.Log("[SUCCESS] update completed.\n")
 }
 
 // User検索 -> 消去
