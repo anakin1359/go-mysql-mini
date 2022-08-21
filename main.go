@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"developer/database"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -16,6 +15,10 @@ func init() {
 	}
 }
 
+// func main() {
+// 	fmt.Println("test")
+// }
+
 func main() {
 	db, err := database.DbConnector()
 	if err != nil {
@@ -24,13 +27,12 @@ func main() {
 
 	defer db.Close()
 
-	query := "INSERT INTO user(user_id, user_name, email_address, tel_number) VALUES(?, ?, ?, ?)"
+	query := "SELECT * FROM user"
 	stmt, err := db.Prepare(query)
 	if err != nil {
 		fmt.Println("Failure of Query issuing process.\n", err)
 		return
 	}
-
 	var (
 		user_id       = 1001
 		user_name     = "sample_user"
