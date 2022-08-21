@@ -8,12 +8,16 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// Userの構造体
 type User struct {
 	UserId       uint32
 	UserName     string
 	EmailAddress string
 	TelNumber    string
 }
+
+// 構造体Userの配列版の構造体を新たに定義
+type UserList []User
 
 // type User struct {
 // 	UserId       uint32 `json:"user_id"`
@@ -66,7 +70,10 @@ func InsertUser(userId uint32, userName string, emailAddress string, telNumber s
 	return uint32(insertId), nil
 }
 
-func GetAllUsers() {
+func GetAllUsers() (UserList, error) {
+	// 構造体User(配列版)の変数宣言
+	var ul UserList
+
 	db, err := DbConnector()
 	if err != nil {
 		panic(err.Error())
@@ -76,29 +83,27 @@ func GetAllUsers() {
 	query := "SELECT user_id, user_name, email_address, tel_number FROM user"
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		fmt.Println("Prepare Error.\n", err)
-		return
+		return ul, fmt.Errorf("Prepare Error. %v\n", err)
 	}
 
 	rows, err := stmt.Query() // 複数レコード取得
 	if err != nil {
-		fmt.Println("Query Error.\n", err)
-		return
+		return ul, fmt.Errorf("Query Error. %v\n", err)
 	}
 
 	for rows.Next() {
-		u := &User{}
-		err = rows.Scan(&u.UserId, &u.UserName, &u.EmailAddress, &u.TelNumber)
+		var user User
+		err = rows.Scan(&user.UserId, &user.UserName, &user.EmailAddress, &user.TelNumber)
 		if err != nil {
-			fmt.Println("Scan Error\n", err)
-			return
+			return ul, fmt.Errorf("Scan Error. %v\n", err)
 		}
-		fmt.Println(u)
+		ul = append(ul, user)
 	}
 
 	err = rows.Err()
 	if err != nil {
-		fmt.Println("Rows Error\n", err)
-		return
+		return ul, fmt.Errorf("Rows Error. %v\n", err)
 	}
+
+	return ul, nil
 }

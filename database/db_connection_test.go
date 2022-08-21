@@ -67,7 +67,7 @@ func TestInsertUser(t *testing.T) {
 		t.Error(err)
 	}
 	fmt.Println("[SUCCESS] uid:", lastUid)
-	t.Logf("%+v", lastUid)
+	// t.Logf("%+v", lastUid)
 }
 
 // 全レコード取得テスト
@@ -77,8 +77,13 @@ func TestGetAllUsers(t *testing.T) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
 	defer db.Close()
+
 	fmt.Println("test")
-	GetAllUsers()
+	userList, err := GetAllUsers()
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println("[SUCCESS] User List:", userList)
+	// t.Logf("%+v", userList)
 }
