@@ -58,35 +58,9 @@ func TestDbInsert(t *testing.T) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
 	defer db.Close()
 
-	query := "INSERT INTO user(user_id, user_name, email_address, tel_number) VALUES(?, ?, ?, ?)"
-	stmt, err := db.Prepare(query)
-	if err != nil {
-		fmt.Println("Failure of Query issuing process.\n", err)
-		return
-	}
-
-	var (
-		user_id       = 10001
-		user_name     = "sample_user"
-		email_address = "sample-mail@example.co.jp"
-		tel_number    = "050-1234-5678"
-	)
-
-	result, err := stmt.Exec(user_id, user_name, email_address, tel_number)
-	if err != nil {
-		fmt.Println("Failure of query execution process.\n", err)
-		return
-	}
-
-	insertId, err := result.LastInsertId()
-	if err != nil {
-		fmt.Println("Insert ID: ", -1, err)
-		return
-	}
-	fmt.Println("Insert ID: ", insertId)
+	InsertUser()
 }
 
 // 全レコード取得テスト

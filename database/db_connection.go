@@ -40,6 +40,41 @@ func DbConnector() (*sql.DB, error) {
 	return db, nil
 }
 
+func InsertUser() {
+	db, err := DbConnector()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	query := "INSERT INTO user(user_id, user_name, email_address, tel_number) VALUES(?, ?, ?, ?)"
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		fmt.Println("Failure of Query issuing process.\n", err)
+		return
+	}
+
+	var (
+		user_id       = 10005
+		user_name     = "sample_user"
+		email_address = "sample-mail@example.co.jp"
+		tel_number    = "050-1234-5678"
+	)
+
+	result, err := stmt.Exec(user_id, user_name, email_address, tel_number)
+	if err != nil {
+		fmt.Println("Failure of query execution process.\n", err)
+		return
+	}
+
+	insertId, err := result.LastInsertId()
+	if err != nil {
+		fmt.Println("Insert ID: ", -1, err)
+		return
+	}
+	fmt.Println("Insert ID: ", insertId)
+}
+
 func GetAllUsers() {
 	db, err := DbConnector()
 	if err != nil {
