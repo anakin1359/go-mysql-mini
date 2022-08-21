@@ -52,7 +52,7 @@ func TestDbConnector(t *testing.T) {
 }
 
 // レコードinsertテスト
-func TestDbInsert(t *testing.T) {
+func TestInsertUser(t *testing.T) {
 	conf := EnvSetting()
 	db, err := sql.Open("mysql", conf)
 	if err != nil {
@@ -60,7 +60,14 @@ func TestDbInsert(t *testing.T) {
 	}
 	defer db.Close()
 
-	InsertUser()
+	var uid uint32 = 10009
+	var uName, addr, tNum string = "proto_user", "proto@example.co.jp", "050-1234-5678"
+	lastUid, err := InsertUser(uid, uName, addr, tNum)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println("[SUCCESS] uid:", lastUid)
+	t.Logf("%+v", lastUid)
 }
 
 // 全レコード取得テスト

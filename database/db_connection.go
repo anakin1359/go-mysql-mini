@@ -40,7 +40,7 @@ func DbConnector() (*sql.DB, error) {
 	return db, nil
 }
 
-func InsertUser() {
+func InsertUser(userId uint32, userName string, emailAddress string, telNumber string) (uint32, error) {
 	db, err := DbConnector()
 	if err != nil {
 		panic(err.Error())
@@ -50,29 +50,20 @@ func InsertUser() {
 	query := "INSERT INTO user(user_id, user_name, email_address, tel_number) VALUES(?, ?, ?, ?)"
 	stmt, err := db.Prepare(query)
 	if err != nil {
-		fmt.Println("Failure of Query issuing process.\n", err)
-		return
+		return 0, fmt.Errorf("Failure of Query issuing process.%v\n", err)
 	}
 
-	var (
-		user_id       = 10005
-		user_name     = "sample_user"
-		email_address = "sample-mail@example.co.jp"
-		tel_number    = "050-1234-5678"
-	)
-
-	result, err := stmt.Exec(user_id, user_name, email_address, tel_number)
+	result, err := stmt.Exec(userId, userName, emailAddress, telNumber)
 	if err != nil {
-		fmt.Println("Failure of query execution process.\n", err)
-		return
+		return 0, fmt.Errorf("Failure of query execution process. %v\n", err)
 	}
 
 	insertId, err := result.LastInsertId()
 	if err != nil {
-		fmt.Println("Insert ID: ", -1, err)
-		return
+		return 0, fmt.Errorf("Insert ID: %d, %v ", -1, err)
 	}
-	fmt.Println("Insert ID: ", insertId)
+
+	return uint32(insertId), nil
 }
 
 func GetAllUsers() {
