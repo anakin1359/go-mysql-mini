@@ -1,10 +1,8 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -17,90 +15,69 @@ func init() {
 	}
 }
 
-func EnvSetting() string {
-	var (
-		user     = os.Getenv("MYSQL_USER")
-		pass     = os.Getenv("MYSQL_PASSWORD")
-		host     = os.Getenv("MYSQL_HOST")
-		port     = os.Getenv("MYSQL_HOST_PORT")
-		database = os.Getenv("MYSQL_DATABASE")
-	)
-	conf := user + ":" + pass + "@tcp(" + host + ":" + port + ")/" + database + "?parseTime=true"
-	return conf
-}
-
 // DB接続
 func TestDbConnector(t *testing.T) {
-	conf := EnvSetting()
-
-	db, err := sql.Open("mysql", conf)
+	db, err := DbConnector()
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err.Error())
 	}
 
 	defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
-		fmt.Println("Database connection failed.")
-		t.Logf("%+v", err)
-		return
+		t.Logf("[FAILED] Database connection. %+v", err)
 	} else {
-		fmt.Println("Database connection succeeded.")
-		return
+		fmt.Println("[SUCCESS] Database connection succeeded.")
 	}
 }
 
 // User情報登録
 func TestInsertUser(t *testing.T) {
-	conf := EnvSetting()
-	db, err := sql.Open("mysql", conf)
+	db, err := DbConnector()
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err.Error())
 	}
 	defer db.Close()
 
-	var uid uint32 = 10001
+	var uid uint32 = 10012
 	var uName, addr, tNum string = "proto_user", "proto@example.co.jp", "050-1234-5678"
-	lastUid, err := InsertUser(uid, uName, addr, tNum)
+	lastUid, err := InsertUser(db, uid, uName, addr, tNum)
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println("[SUCCESS] uid:", lastUid)
-	// t.Logf("%+v", lastUid)
+	t.Logf("[SUCCESS] user_id: %+v", lastUid)
 }
 
 // User検索
 func TestGetUser(t *testing.T) {
-	conf := EnvSetting()
-	db, err := sql.Open("mysql", conf)
+	db, err := DbConnector()
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err.Error())
 	}
 	defer db.Close()
 
-	var uid uint32 = 100020
-	u, err := GetUser(uid)
+	var uid uint32 = 10012
+	u, err := GetUser(db, uid)
 	if err != nil {
 		t.Error(err)
 	}
-	t.Logf("%+v", u)
+	t.Logf("[SUCCESS] User Info: %+v", u)
 }
 
 // 全User検索
 func TestGetAllUsers(t *testing.T) {
-	conf := EnvSetting()
-	db, err := sql.Open("mysql", conf)
+	db, err := DbConnector()
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err.Error())
 	}
 	defer db.Close()
 
-	userList, err := GetAllUsers()
+	userList, err := GetAllUsers(db)
 	if err != nil {
 		t.Error(err)
 	}
-	t.Logf("%+v", userList)
+	t.Logf("[SUCCESS] All User Info %+v", userList)
 }
 
 // User検索 -> UserName変更

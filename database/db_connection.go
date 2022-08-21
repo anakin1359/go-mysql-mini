@@ -44,13 +44,7 @@ func DbConnector() (*sql.DB, error) {
 }
 
 // User情報登録
-func InsertUser(userId uint32, userName string, emailAddress string, telNumber string) (uint32, error) {
-	db, err := DbConnector()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
+func InsertUser(db *sql.DB, userId uint32, userName string, emailAddress string, telNumber string) (uint32, error) {
 	query := "INSERT INTO user(user_id, user_name, email_address, tel_number) VALUES(?, ?, ?, ?)"
 	stmt, err := db.Prepare(query)
 	if err != nil {
@@ -71,14 +65,8 @@ func InsertUser(userId uint32, userName string, emailAddress string, telNumber s
 }
 
 // User検索
-func GetUser(userId uint32) (*User, error) {
+func GetUser(db *sql.DB, userId uint32) (*User, error) {
 	var u User
-
-	db, err := DbConnector()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
 
 	query := "SELECT user_id, user_name, email_address, tel_number FROM user WHERE user_id = ? LIMIT 1"
 	stmt, err := db.Prepare(query)
@@ -99,16 +87,17 @@ func GetUser(userId uint32) (*User, error) {
 	return &u, nil
 }
 
+// UserId検索 -> UserName変更
+// func UpdateUserName(userId uint32, userName string) bool {
+// }
+
+// UserId検索 -> 消去
+// func DeleteUserInfo() bool {}
+
 // 全User検索
-func GetAllUsers() (*UserList, error) {
+func GetAllUsers(db *sql.DB) (*UserList, error) {
 	// 構造体User(配列版)の変数宣言
 	var ul UserList
-
-	db, err := DbConnector()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
 
 	query := "SELECT user_id, user_name, email_address, tel_number FROM user"
 	stmt, err := db.Prepare(query)
@@ -137,9 +126,3 @@ func GetAllUsers() (*UserList, error) {
 
 	return &ul, nil
 }
-
-// UserId検索 -> UserName変更
-// func UpdateUserName() (User, error) {}
-
-// UserId検索 -> 消去
-// func DeleteUserInfo() bool {}
