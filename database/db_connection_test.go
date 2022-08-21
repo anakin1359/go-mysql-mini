@@ -60,7 +60,7 @@ func TestInsertUser(t *testing.T) {
 	}
 	defer db.Close()
 
-	var uid uint32 = 10009
+	var uid uint32 = 10001
 	var uName, addr, tNum string = "proto_user", "proto@example.co.jp", "050-1234-5678"
 	lastUid, err := InsertUser(uid, uName, addr, tNum)
 	if err != nil {
@@ -79,7 +79,6 @@ func TestGetAllUsers(t *testing.T) {
 	}
 	defer db.Close()
 
-	fmt.Println("test")
 	userList, err := GetAllUsers()
 	if err != nil {
 		t.Error(err)
